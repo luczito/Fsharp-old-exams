@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "JuCP8ZTzX9EaeujXl9TvMzRSH6lJhFbBxzEAvVdkpehgY1MLX+ANsPIf8ULt6jOHaRfbmZNKuVYDxdbxngkn2w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\exams\\exam-2019-05\\exam-2019-05\\exam-2019-05.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\LF\\.nuget\\packages\\fsharp.core\\7.0.200\\fsharp.core.7.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}
