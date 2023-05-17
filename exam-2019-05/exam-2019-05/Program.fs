@@ -168,3 +168,59 @@ let fTail x lst =
     | y::ys when x = y -> acc (Some ys)
     | y::ys -> loop (fun res -> acc (Option.map (fun ys' -> y::ys') res)) ys
   loop (fun res -> res) lst
+
+//--------------------------------------------------------------------------------------------------------
+//q3
+
+//q3.1
+
+open System
+
+let rec calculatePi x : decimal =
+    let rec loop i pi count = 
+        if i > x then
+            pi
+        else
+            let numerator = 4 * count
+            let denominator = (2UL * i) * (2UL * i + 1UL) * (2UL * i + 2UL)
+            let nextPi = pi + (Decimal(numerator) / Decimal(denominator))
+            let nextCount = -count
+            loop(i + 1UL) nextPi nextCount
+    loop 1UL 3 1
+
+//calculatePi 0UL  // = 3.0M
+calculatePi 1UL  // = 3.1666666666666666666666666667M
+calculatePi 42UL // = 3.1415895113348010771053921701M
+
+//q3.2
+
+let piSeq : seq<decimal> =
+    let rec loop count list =
+        let result = calculatePi count
+        let updatedList = Seq.append list (Seq.singleton result)
+        if count < UInt64.MaxValue then
+            loop (count + 1UL) updatedList
+        else
+            updatedList
+    loop 0UL Seq.empty
+
+//q3.3
+let circleArea (r: float) =
+    Seq.map (fun pi -> pi * decimal(r * r)) piSeq
+
+let sphereVolume (r: float) =
+    Seq.map (fun pi -> pi * decimal(r * r * r) * decimal(4.0) / decimal(3.0)) piSeq
+
+circleArea 2.5   // = seq [18.750M; 19.79166667M; 19.58333333M; 19.6577381M; ...]
+sphereVolume 2.5 // = seq [62.50M; 65.97222222M; 65.27777778M; 65.52579365M; ...]
+
+//q3.4
+
+let circleSphere (r: float) =
+    let pairs = seq {
+        for pi in piSeq do
+            let area = pi * decimal(r * r)
+            let volume = pi * decimal(r * r * r) * decimal(4.0) / decimal(3.0)
+            yield (area, volume)
+        }
+    pairs
