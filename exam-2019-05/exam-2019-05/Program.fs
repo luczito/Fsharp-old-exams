@@ -23,7 +23,7 @@ let rec fromInt (x: uint32) : Peano =
 let rec add (a: Peano) (b: Peano) : Peano =
     match a with
     | O -> b  // If a is zero (O), return b as the sum of zero and b is b.
-    | S p -> S (add p b)  // If a is S p (successor of p), recursively call add on p and b, then construct the successor of the result.
+    | S p -> S (add p b)  // If a is S p (successor of p), recursively call add on p and b, then construct the successor of the pi.
 
 let rec mult (a: Peano) (b: Peano) : Peano =
     match a with
@@ -33,7 +33,7 @@ let rec mult (a: Peano) (b: Peano) : Peano =
 let rec pow (a: Peano) (b: Peano) : Peano =
     match b with
     | O -> S O  // If b is zero (O), return S O as any number raised to the power of zero is 1.
-    | S p -> mult a (pow a p)  // If b is S p (successor of p), recursively call pow on a and p, then multiply a with the result.
+    | S p -> mult a (pow a p)  // If b is S p (successor of p), recursively call pow on a and p, then multiply a with the pi.
 
 add  (S (S O)) (S (S (S O))) // S (S (S (S (S O))))
 mult (S (S O)) (S (S (S O))) // S (S (S (S (S (S O)))))
@@ -46,7 +46,7 @@ let tailAdd a b =
             | O -> acc
             | S p -> aux p b (S (acc))
     aux a b b
-let tailaddResult = tailAdd (S (S O)) (S (S (S O)))
+let tailaddpi = tailAdd (S (S O)) (S (S (S O)))
 
 let tailMult a b = 
     let rec aux a b acc =
@@ -55,7 +55,7 @@ let tailMult a b =
             | S p -> aux p b (tailAdd b acc)
     aux a b O
 
-let tailMultResult: Peano = tailMult (S (S O)) (S (S (S O))) // S (S (S (S (S (S O)))))
+let tailMultpi: Peano = tailMult (S (S O)) (S (S (S O))) // S (S (S (S (S (S O)))))
 
 let tailPow a b =
     let rec aux a b acc = 
@@ -64,7 +64,7 @@ let tailPow a b =
             | S p -> aux a p (tailMult a acc)
     aux a b (S O)
 
-let tailPowResult = tailPow  (S (S O)) (S (S (S O))) // S (S (S (S (S (S (S (S O))))))) 
+let tailPowpi = tailPow  (S (S O)) (S (S (S O))) // S (S (S (S (S (S (S (S O))))))) 
 
 let rec loop f acc p =
     match p with
@@ -83,21 +83,21 @@ let loopAdd a b =
     | S p -> S (S p)
   loop (fun acc -> addOne acc) a b
 
-let loopAddResult = loopAdd (S (S O)) (S (S (S O)))
+let loopAddpi = loopAdd (S (S O)) (S (S (S O)))
 
 let loopMult a b =
     let addA x =
         loopAdd x a
     loop(fun acc -> addA acc) O b
 
-let loopMultResult: Peano = loopMult (S (S O)) (S (S (S O))) // S (S (S (S (S (S O)))))
+let loopMultpi: Peano = loopMult (S (S O)) (S (S (S O))) // S (S (S (S (S (S O)))))
 
 let loopPow a b = 
     let multA x = 
         loopMult x a
     loop(fun acc -> multA acc) (S O) b
 
-let loopPowResult = loopPow  (S (S O)) (S (S (S O))) // S (S (S (S (S (S (S (S O))))))) 
+let loopPowpi = loopPow  (S (S O)) (S (S (S O))) // S (S (S (S (S (S (S (S O))))))) 
 
 
 //-------------------------------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ let rec f x =
         match f x ys with
         | Some ys' -> Some (y::ys')
         | None     -> None
-//the error occurs because the function does not properly handle if the result is none
+//the error occurs because the function does not properly handle if the pi is none
 
 let rec f2 x =
     function
@@ -149,16 +149,16 @@ let rec gOpt xs = function
 //q 2.4
 //g is tail recursive since the call to g is the last operation in the branch.
 
-//let result = g [1; 2; 3] [3; 4; 5]
+//let pi = g [1; 2; 3] [3; 4; 5]
 (*
     The first recursive call to g is made with xs = [1; 2; 3] and ys = [3; 4; 5].
     Inside the first branch, g calls f 3 [1; 2; 3], which returns Some [2; 3]. 
-    The result is then mapped to g [2; 3] [4; 5] using Option.map.
+    The pi is then mapped to g [2; 3] [4; 5] using Option.map.
     In the second recursive call to g, the inputs are xs = [2; 3] and ys = [4; 5]. 
     Inside the first branch, g calls f 4 [2; 3], which returns None. 
-    Since the result is None, the Option.map returns None as well. 
+    Since the pi is None, the Option.map returns None as well. 
     Finally, Option.default_value replaces the None with false.
-    The final result of the evaluation is false, indicating that the g function returns false for the given inputs.
+    The final pi of the evaluation is false, indicating that the g function returns false for the given inputs.
 *)
 
 
@@ -176,40 +176,56 @@ let fTail x lst =
 
 open System
 
-let rec calculatePi x : decimal =
-    let rec loop i pi count = 
-        if i > x then
+let calculatePi (x : uint64) : decimal =
+    let rec loop (x : uint64) (pi : decimal) (count : decimal) (divisor : decimal) : decimal =
+        if x = 0UL then
             pi
         else
-            let numerator = 4 * count
-            let denominator = (2UL * i) * (2UL * i + 1UL) * (2UL * i + 2UL)
-            let nextPi = pi + (Decimal(numerator) / Decimal(denominator))
-            let nextCount = -count
-            loop(i + 1UL) nextPi nextCount
-    loop 1UL 3 1
+            let product = decimal(4) / (decimal(2) * divisor * (decimal(2) * divisor + decimal(1)) * (decimal(2) * divisor + decimal(2)))
+            let newPi = pi + (count * product)
+            let newCount = -count
+            let newDivisor = divisor + decimal(1)    
+            loop (x - 1UL) newPi newCount newDivisor
+    
+    loop x (decimal(3)) (decimal(1)) (decimal(1))
 
-//calculatePi 0UL  // = 3.0M
+// let rec calculatePi x : decimal =
+//     let rec loop i pi count = 
+//         if i > x then
+//             pi
+//         else
+//             let numerator = decimal(4)
+//             let denominator = decimal((2UL * i) * (2UL * i + 1UL) * (2UL * i + 2UL))
+//             let nextPi = pi + ((numerator / denominator) * count)
+//             let nextCount = -count
+//             loop(i + 1UL) nextPi nextCount
+//     loop 1UL (decimal(3)) (decimal(1))
+
+calculatePi 0UL  // = 3.0M
 calculatePi 1UL  // = 3.1666666666666666666666666667M
 calculatePi 42UL // = 3.1415895113348010771053921701M
+calculatePi 10000000UL // = 3.1415926535897932384623932776M
+
 
 //q3.2
 
 let piSeq : seq<decimal> =
     let rec loop count list =
-        let result = calculatePi count
-        let updatedList = Seq.append list (Seq.singleton result)
-        if count < UInt64.MaxValue then
+        let pi = calculatePi count
+        let updatedList = Seq.append list (Seq.singleton pi)
+        if count < 1000UL then
             loop (count + 1UL) updatedList
         else
             updatedList
     loop 0UL Seq.empty
 
+let list = Seq.item 100 piSeq
 //q3.3
 let circleArea (r: float) =
     Seq.map (fun pi -> pi * decimal(r * r)) piSeq
 
 let sphereVolume (r: float) =
-    Seq.map (fun pi -> pi * decimal(r * r * r) * decimal(4.0) / decimal(3.0)) piSeq
+    Seq.map (fun pi -> ((decimal(4)/decimal(3)) * pi) * decimal(r * r * r)) piSeq
 
 circleArea 2.5   // = seq [18.750M; 19.79166667M; 19.58333333M; 19.6577381M; ...]
 sphereVolume 2.5 // = seq [62.50M; 65.97222222M; 65.27777778M; 65.52579365M; ...]
@@ -224,3 +240,54 @@ let circleSphere (r: float) =
             yield (area, volume)
         }
     pairs
+
+circleSphere 2.5 // = seq[(18.750M, 62.50M); (19.79166667M, 65.97222222M); (19.58333333M, 65.27777778M);(19.6577381M, 65.52579365M); ...] 
+
+//q3.5
+
+let calculatePartialPi (x : uint64) : decimal =
+    let rec loop (x : uint64) (pi : decimal) (count : decimal) (divisor : decimal) : decimal =
+        if x = 0UL then
+            pi
+        else
+            let product = decimal(4) / (decimal(2) * divisor * (decimal(2) * divisor + decimal(1)) * (decimal(2) * divisor + decimal(2)))
+            let newPi = pi + (count * product)
+            let newCount = -count
+            let newDivisor = divisor + decimal(1)    
+            loop (x - 1UL) newPi newCount newDivisor
+    
+    loop x (decimal(0)) (decimal(1)) (decimal(1))
+
+let calculateParallelPi (nop: uint64) (ipp: uint64) =
+    async {
+        let tasks =
+            [
+            async{
+                let num =
+                    if nop = 0UL || ipp = 0UL then
+                        0UL
+                    else
+                    (nop * ipp) + 1UL
+                let result = calculatePartialPi num
+                return result
+            }
+            ]
+        let! results = Async.Parallel tasks
+        let sum = Array.sum results + 3.0M
+        return sum
+    }
+
+let parallelPi nop ipp =
+    Async.RunSynchronously (calculateParallelPi nop ipp)
+
+
+calculatePartialPi 0UL
+
+parallelPi 1UL 0UL       //3.000000000000000
+                                    //3.0M
+parallelPi 1UL 1000000UL //3.141592653589793
+                                    //3.1415926535897932387126418813M
+parallelPi 10UL 100000UL //3.141592653589793
+                                    //3.1415926535897932387126418813M
+parallelPi 100UL 10000UL //3.141592653589793
+                                    //3.1415926535897932387126418813M
