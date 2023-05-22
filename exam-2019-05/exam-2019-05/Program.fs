@@ -291,3 +291,62 @@ parallelPi 10UL 100000UL //3.141592653589793
                                     //3.1415926535897932387126418813M
 parallelPi 100UL 10000UL //3.141592653589793
                                     //3.1415926535897932387126418813M
+
+//-------------------------------------------------------------------------------------------------------------
+
+//Q4
+
+//q4.1
+
+type Dir = Left | Right
+
+type Tape<'a> =
+    { tape: 'a array
+      head: int }
+
+let tapeFromList (osyms: 'a option list) : Tape<'a> =
+    let tapeArray =
+        Array.ofList osyms
+        |> Array.choose id
+    { tape = tapeArray
+      head = 0 }
+
+tapeFromList [Some true; Some true; Some true; Some false; 
+              Some true; Some true; Some true; Some true; Some true; Some false]
+
+let tapeToList (tape: Tape<'a>) : 'a list =
+    let rec trimLeadingBlanks (arr: 'a array) : 'a array =
+        match arr with
+        | [||] -> [||]
+        | [| blank |] when blank = Unchecked.defaultof<'a> -> [||]
+        | _ -> arr
+
+    let trimmedTape = trimLeadingBlanks tape.tape
+    trimmedTape |> Array.toList
+
+let moveHead (dir: Dir) (tape: Tape<'a>) : Tape<'a> =
+    match dir with
+    | Left -> { tape with head = tape.head - 1 }
+    | Right -> { tape with head = tape.head + 1 }
+
+let readTape (tape: Tape<'a>) : 'a option =
+    let tapeArray = tape.tape
+
+    if tape.head >= 0 && tape.head < Array.length tapeArray then
+        Some tapeArray.[tape.head]
+    else
+        None
+
+let writeTape (osym: 'a option) (tape: Tape<'a>) : Tape<'a> =
+    let tapeArray = tape.tape
+    let newArray =
+        tapeArray
+        |> Array.mapi (fun i sym ->
+            if i = tape.head then
+                Option.defaultValue sym osym
+            else
+                sym
+        )
+
+    { tape with tape = newArray }
+

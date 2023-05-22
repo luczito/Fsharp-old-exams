@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\Fsharp-old-exams\\exam-2019-08\\exam-2019-08.fsproj": {}
+  },
+  "projects": {
+    "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\Fsharp-old-exams\\exam-2019-08\\exam-2019-08.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\Fsharp-old-exams\\exam-2019-08\\exam-2019-08.fsproj",
+        "projectName": "exam-2019-08",
+        "projectPath": "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\Fsharp-old-exams\\exam-2019-08\\exam-2019-08.fsproj",
+        "packagesPath": "C:\\Users\\LF\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\Fsharp-old-exams\\exam-2019-08\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\LF\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\sdk\\7.0.203\\FSharp\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[7.0.200, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
