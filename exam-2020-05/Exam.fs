@@ -33,12 +33,11 @@
 (* Question 1.2 *)
 
     let insertTail x lst = 
-        let rec loop x acc =
-            function
+        let rec loop x acc = function
             | [] -> acc ([x])
-            | y::ys -> if x <= y then acc(x::ys) 
-                        else loop x (fun acclst -> acc(x::acclst)) ys
-        loop x (fun x -> x) lst  
+            | y::ys as l -> if x <= y then acc(x::l)
+                                        else loop x (fun acclst -> acc(y::acclst)) ys
+        loop x (fun x -> x) lst
         
     let insertionSortTail lst = 
         let rec loop acc = function
@@ -56,20 +55,20 @@
     *)
 
     let insertionSort2 lst =
-        let insertTail x lst = List.foldBack (fun y acc -> if x <= y then x::y::acc else y::acc) lst [x] in
-        List.foldBack insertTail lst []
+        List.fold (fun acc x -> insertTail x acc) [] lst
 
 
 (* Question 1.4 *)
-
-    let insertBy f x lst = 
-        let rec loop lst =
-            match lst with 
-            |[] -> [x]
-            | y::ys -> 
-                if f x y then x::lst
-                else y :: loop ys
-        loop lst
+    let insertBy (f : 'a -> 'b) (x : 'a) (lst : 'a list) : 'a list =
+        let rec insertByHelper acc remaining =
+            match remaining with
+            | [] -> List.rev (x :: acc)
+            | y :: ys ->
+                if f x <= f y then
+                    List.rev acc @ (x :: remaining)
+                else
+                    insertByHelper (y :: acc) ys
+        insertByHelper [] lst
 
     let rec insertionSortBy f lst = 
         match lst with 
@@ -176,15 +175,13 @@
 (* Question 2.4 *)
 
     let bar2 x lst =
-        List.map (fun inner -> inner @ [x]) lst 
+        List.map (fun inner -> [x] @ inner) lst 
         
 (* Question 2.5 *)
 
-    let baz2 _ = function
-        | [] -> []
-        | [x] -> [[x]]
-        | xs  -> 
-            List.fold (fun acc y -> (foo y >> baz >> bar y) xs @ acc) [] xs
+    let baz2 xs =
+        let folder y acc = (foo y xs |> baz |> bar y) @ acc
+        List.foldBack folder xs []
 
 (* Question 2.6 *)
 
@@ -196,31 +193,74 @@
 
     *)
 
-    let fooTail x lst = 
-        let rec loop acc x lst =
-            match lst with
+    let fooTail x xs =
+        let rec aux acc = function
             | [] -> List.rev acc
-            | y :: ys when x = y -> List.append acc ys
-            | y::ys -> loop (y :: acc) x ys
-        loop [] x lst
+            | y :: ys when x = y -> List.rev acc @ ys
+            | y :: ys -> aux (y :: acc) ys
+        aux [] xs
 
 (* 3: Rock Paper Scissors *)
 
 (* Question 3.1 *)
 
-    type shape = unit (* replace unit with the correct type declaration *)
-    type result = unit (* replace unit with the correct type declaration *)
+    type shape =
+        | Rock
+        | Paper
+        | Scissors
+         (* replace unit with the correct type declaration *)
+    type result = 
+        | PlayerOneWin
+        | PlayerTwoWin
+        | Draw
+     (* replace unit with the correct type declaration *)
 
-    let rps _ = failwith "not implemented"
+    let mkShape =
+        function
+        | "rock"     -> Rock
+        | "paper"    -> Paper
+        | "scissors" -> Scissors
+        | s          -> failwith (sprintf "invalid shape: %s" s) 
+
+    let shapeToString =
+        function
+        | Rock     -> "rock"
+        | Paper    -> "paper"
+        | Scissors -> "scissors"
+
+    let resultToString =
+        function
+        | PlayerOneWin -> "playerOneWin"
+        | PlayerTwoWin -> "playerTwoWin"
+        | Draw         -> "draw"
+        
+    let rps s1 s2 = 
+        match s1, s2 with 
+        | Rock, Rock -> Draw
+        | Scissors, Scissors -> Draw
+        | Paper, Paper -> Draw
+        | Rock, Scissors -> PlayerOneWin
+        | Scissors, Paper -> PlayerOneWin
+        | Paper, Rock -> PlayerOneWin
+        | Rock, Paper -> PlayerTwoWin
+        | Scissors, Rock -> PlayerTwoWin
+        | Paper, Scissors -> PlayerTwoWin
+
+
 
 (* Question 3.2 *)
 
     type strategy = (shape * shape) list -> shape
 
-    let parrot _ = failwith "not implemented"
-    
-    let beatingStrat _ = failwith "not implemented"
+    let parrot (s: shape) : strategy  = 
+        let rec parrotStrat moves = 
+            match moves with
+            | [] -> s
+            | (_, opponentMove) :: _ -> opponentMove
+        parrotStrat
 
+    let beatingStrat : strategy =
+        
     let roundRobin _ = failwith "not implemented"
 
 (* Question 3.3 *)
