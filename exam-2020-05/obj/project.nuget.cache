@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "zI90lhwUOCQPqe4NgADpFCvNgCH0BroA+ngLdmVu+pWRM7r4ZUvc2GJPer+aJZP25gWiqYYwxUrUvhWY7igQwA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\LF\\Desktop\\ITU\\ITU 4 semester\\Functional progr\\Fsharp-old-exams\\exam-2020-05\\exam-2020-05.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\LF\\.nuget\\packages\\fsharp.core\\7.0.200\\fsharp.core.7.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}

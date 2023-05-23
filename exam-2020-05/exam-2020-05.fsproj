@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>exam_2020_05</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ExamInteractive.fsx" />
+    <Compile Include="Exam.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+</Project>

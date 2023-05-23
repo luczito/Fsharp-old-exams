@@ -224,3 +224,78 @@ let goldenRectangleTriangle a =
         yield (rect, tria)
     }
     pairs
+
+
+//q4-----------------------------------------------------------------------------------------------------------
+
+//q4.1
+type tile = { Shape: string; Color: string }
+
+let mkTile col shap =
+    let tile = {Shape = shap; Color = col}
+    tile
+
+let tileToString t =
+    let output = t.Shape + " " + t.Color
+    output
+     
+//q4.2
+let validTiles ts t =
+    let isValid t =
+        List.forall (fun existingTile ->
+            (existingTile.Shape = t.Shape && existingTile.Color <> t.Color)
+            || (existingTile.Color = t.Color && existingTile.Shape <> t.Shape)
+        ) ts
+
+    isValid t
+        
+//q4.3
+type coord = Coord of int * int
+type board = Board of Map<coord, tile>
+type direction = Left | Right | Up | Down
+
+let moveCoord c d =
+    match c, d with
+    | Coord(x, y), Left -> Coord(x-1, y)
+    | Coord(x,y), Right -> Coord(x+1, y)
+    | Coord(x,y), Up -> Coord(x, y-1)
+    | Coord(x,y), Down -> Coord(x,y+1)
+
+let collectTiles b c d =
+    let rec loop c d acc =
+        let getNextTile c =
+            match b with
+            | Board(tileMap) -> Map.tryFind c tileMap
+
+        match getNextTile c with
+        | Some(tile) ->
+            let nextCoord = moveCoord c d
+            loop nextCoord d (tile :: acc)
+        | None -> List.rev acc
+    loop c d
+
+
+//q4.4
+
+let (>>=) option bindFn =
+    match option with
+    | Some(value) -> bindFn value
+    | None -> None
+
+let placeTiles ts b =
+    let placeTile c t b  =
+        match b with
+        | Board(tileMap) ->
+            if Map.containsKey c tileMap then
+                None
+            else
+                Some(Board(Map.add c t tileMap))
+
+    let placeAllTiles ts b  =
+        List.foldBack (fun (coord, tile) acc ->
+            acc >>= fun b -> placeTile coord tile b
+        ) ts (Some b)
+
+    placeAllTiles ts b
+
+    
