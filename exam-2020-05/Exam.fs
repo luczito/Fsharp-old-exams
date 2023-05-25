@@ -258,10 +258,44 @@
             | [] -> s
             | (_, opponentMove) :: _ -> opponentMove
         parrotStrat
-
     let beatingStrat : strategy =
+        fun moves ->
+            match moves with
+            | [] -> Rock
+            | _ ->
+                let grouped = moves |> List.groupBy snd
+                let maxOccurrences = grouped |> List.maxBy (fun (_, group) -> List.length group) |> snd
+                let mostPlayed = grouped |> List.filter (fun (_, group) -> List.length group = List.length maxOccurrences) |> List.map fst
+
+                let prioritizeShapes = [Rock; Paper; Scissors]
+
+                let rec findOpponentShape shapes =
+                    match shapes with
+                    | [] -> failwith "No shapes provided."
+                    | shape :: remainingShapes ->
+                        if List.contains shape mostPlayed then
+                            shape
+                        else
+                            findOpponentShape remainingShapes
+
+                let opponentShape = findOpponentShape prioritizeShapes
+
+                match opponentShape with
+                | Rock -> Paper
+                | Paper -> Scissors
+                | Scissors -> Rock
+
+    let roundRobin (shapes: shape list) : strategy =
+        let currentIndex = ref 0
         
-    let roundRobin _ = failwith "not implemented"
+        fun _ ->
+            if List.isEmpty shapes then
+                failwith "Empty shape list"
+            else
+                let currentShape = List.item !currentIndex shapes
+                currentIndex := (!currentIndex + 1) % List.length shapes
+                currentShape
+         
 
 (* Question 3.3 *)
 
@@ -275,7 +309,25 @@
     
     *)
 
-    let bestOutOf _ = failwith "not implemented"
+    let bestOutOf (strat1: strategy) (strat2: strategy) : (int * int) seq =
+        let initialState = (0, 0, [], [])
+        
+        Seq.unfold (fun (p1Wins, p2Wins, moves1, moves2) ->
+            let move1 = strat1 moves1
+            let move2 = strat2 moves2
+
+            let roundResult =
+                if move1 = move2 then
+                    (p1Wins, p2Wins)
+                elif (move1 = Rock && move2 = Scissors) ||
+                        (move1 = Paper && move2 = Rock) ||
+                        (move1 = Scissors && move2 = Paper) then
+                    (p1Wins + 1, p2Wins)
+                else
+                    (p1Wins, p2Wins + 1)
+
+            Some (roundResult, (p1Wins, p2Wins, move1 :: moves1, move2 :: moves2))
+        ) initialState
 
 (* Question 3.4 *)
 
